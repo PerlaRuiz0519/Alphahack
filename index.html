@@ -1,0 +1,365 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Guía Didáctica de RCP</title>
+<style>
+:root { --bpm: 110; --amp: 6px; --primary:#0ea5e9; --accent:#22c55e; --warn:#f59e0b; --danger:#ef4444; --bg:#0b1020; --card:#121a2b; --text:#e5e7eb; --muted:#94a3b8; --shadow: 0 10px 30px rgba(0,0,0,.3) }
+body { margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif; background: radial-gradient(1200px 800px at 20% -10%, #0b2447 0, #0b1020 60%); color: var(--text); }
+.container { max-width: 1100px; margin: 0 auto; padding: 24px; }
+header { display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap: wrap }
+h1 { font-size: clamp(1.4rem, 4vw, 2rem); margin:0; display:flex; align-items:center; gap:10px; }
+.tag { font-size:.8rem; opacity:.8 }
+.card { background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01)); border: 1px solid rgba(255,255,255,.08); border-radius: 14px; padding:16px 18px; box-shadow: var(--shadow); margin: 16px 0; }
+.grid { display:grid; grid-template-columns: repeat(12,1fr); gap:16px; }
+@media (max-width: 900px){ .grid { grid-template-columns: 1fr } }
+.col-6 { grid-column: span 6 }
+.col-4 { grid-column: span 4 }
+.col-8 { grid-column: span 8 }
+.btn { background: var(--primary); color:white; border:none; padding:10px 14px; border-radius:10px; cursor:pointer; font-weight:600; }
+.btn.secondary { background:#334155 }
+small.muted { color: var(--muted) }
+section h2 { margin-top: 0; font-size:1.2rem }
+ul.clean { margin: 8px 0 0 18px }
+.progress { height: 10px; background:#1f2937; border-radius:99px; overflow:hidden }
+.progress > i { display:block; height:100%; background: linear-gradient(90deg, var(--accent), #86efac); width:0% }
+.hero { display:flex; align-items:center; gap:16px; flex-wrap: wrap }
+.heart { width: 80px; height: 80px; background: radial-gradient(circle at 30% 30%, #ef4444 0, #b91c1c 60%); position:relative; transform: rotate(-45deg) scale(1); margin: 10px; animation: beat calc(60s / var(--bpm)) infinite ease-in-out; }
+.heart:before, .heart:after { content:""; position:absolute; width:80px; height:80px; background: inherit; border-radius:50% }
+.heart:before { top:-40px; left:0 }
+.heart:after { left:40px; top:0 }
+@keyframes beat { 0%, 100% { transform: rotate(-45deg) scale(0.98) } 30% { transform: rotate(-45deg) scale(1.06) } }
+.chest { width: 120px; height: 60px; background: linear-gradient(#94a3b8, #64748b); border-radius:16px; position: relative; transform-origin: center top; animation: compress calc(60s / var(--bpm)) infinite cubic-bezier(.5,0,.5,1); box-shadow: inset 0 -8px 0 rgba(0,0,0,.2) }
+@keyframes compress { 0%, 100% { transform: translateY(0) scaleY(1) } 40% { transform: translateY(var(--amp)) scaleY(.9) } }
+.metronome { width:12px; height:12px; border-radius:50%; background:#64748b; box-shadow: 0 0 0 0 rgba(34,197,94,0.7); animation: pulse calc(60s / var(--bpm)) infinite }
+@keyframes pulse { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(34,197,94,0.7)} 70% { transform: scale(1.35); box-shadow: 0 0 0 10px rgba(34,197,94,0)} 100% { transform: scale(1) } }
+.badge { display:inline-block; padding:4px 8px; border-radius:999px; background:#1f2937; border:1px solid #334155; margin-right:6px }
+.warning { border-left: 3px solid var(--warn) }
+.danger { border-left: 3px solid var(--danger) }
+.qa { margin-bottom: 10px }
+.qa button { margin-top: 6px }
+.scenario-steps li { margin:6px 0 }
+footer { margin: 18px 0 30px; opacity:.8; font-size:.9rem }
+.hidden { display:none }
+label.switch { display:flex; align-items:center; gap:10px }
+input[type=range] { accent-color: var(--accent) }
+.segments { display:flex; gap:8px; align-items:center }
+.segments .seg { background:#1f2937; border:1px solid #334155; color:#e5e7eb; padding:8px 12px; border-radius:10px; cursor:pointer; font-weight:600 }
+.segments .seg.active { background: var(--primary); border-color: var(--primary); color:white }
+.graphic { display:flex; align-items:center; gap:16px }
+svg#torso { width:240px; height:auto; filter: drop-shadow(0 10px 20px rgba(0,0,0,.25)) }
+svg .overlay { display:none }
+svg .overlay.active { display:block }
+.info { font-size:.95rem }
+.info p { margin:6px 0 }
+.pill { display:inline-block; padding:2px 8px; border-radius:999px; background:#1f2937; border:1px solid #334155; font-size:.85rem }
+.callout { border:1px solid #334155; border-left:4px solid var(--warn); background:#0f172a; padding:10px; border-radius:10px; margin-top:10px }
+.tools { display:flex; gap:8px; flex-wrap:wrap; align-items:center }
+.yt-bg { position: fixed; right: -9999px; bottom: -9999px; width:1px; height:1px; opacity:0; pointer-events:none }
+.audio-ctrl { position: fixed; right:16px; bottom:16px; background:#1f2937; border:1px solid #334155; color:#e5e7eb; border-radius:999px; padding:8px 12px; box-shadow: 0 10px 30px rgba(0,0,0,.3); z-index: 50 }
+.audio-ctrl .status { margin-left:8px; font-size:.9rem; color:#94a3b8 }
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+  <h1>Guía Didáctica de RCP <span class="tag">local</span></h1>
+  <div class="segments" role="tablist" aria-label="Selecciona perfil">
+    <button class="seg active" data-profile="adulto" role="tab" aria-selected="true">Adulto</button>
+    <button class="seg" data-profile="niño" role="tab" aria-selected="false">Niño</button>
+    <button class="seg" data-profile="lactante" role="tab" aria-selected="false">Lactante</button>
+  </div>
+</header>
+
+<div class="card hero">
+  <div class="heart" aria-hidden="true"></div>
+  <div>
+    <div id="recText"><strong>Ritmo recomendado:</strong> <span id="recBpm">100-120/min</span> • <strong>Profundidad:</strong> <span id="recDepth">5-6 cm</span></div>
+    <div class="tools">
+      <label class="switch">
+        BPM:
+        <input id="bpm" type="range" min="60" max="150" value="110">
+        <span id="bpmValue">110</span>
+      </label>
+      <div class="metronome" title="Pulso visual"></div>
+      <small class="muted">Ajusta para practicar el ritmo</small>
+      <span id="notes" class="pill">30:2 si ventilas; usa DEA cuanto antes</span>
+    </div>
+  </div>
+</div>
+
+<section class="grid">
+  <div class="card col-6">
+    <h2>Posición de las manos</h2>
+    <div class="graphic">
+      <svg id="torso" viewBox="0 0 240 200" role="img" aria-label="Referencia de manos sobre el esternón">
+        <defs>
+          <linearGradient id="tSkin" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#94a3b8"/>
+            <stop offset="1" stop-color="#64748b"/>
+          </linearGradient>
+          <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#22c55e" />
+          </marker>
+        </defs>
+        <!-- Torso -->
+        <rect x="50" y="30" rx="26" ry="26" width="140" height="130" fill="url(#tSkin)" stroke="#1f2937" stroke-width="2"/>
+        <!-- Esternón -->
+        <rect x="117" y="50" width="6" height="90" fill="#ddd" opacity="0.6"/>
+        <!-- Línea intermamilar -->
+        <line x1="70" y1="100" x2="170" y2="100" stroke="#eab308" stroke-dasharray="4 4" opacity="0.6"/>
+
+        <!-- CORRECTOS -->
+        <g id="overlay-adulto" class="overlay active">
+          <rect x="104" y="98" width="32" height="22" rx="6" fill="#22c55e" opacity="0.7"/>
+          <rect x="101" y="92" width="16" height="28" rx="4" fill="#16a34a"/>
+          <rect x="121" y="92" width="16" height="28" rx="4" fill="#16a34a"/>
+          <text x="120" y="130" text-anchor="middle" fill="#e5e7eb" font-size="11">Dos manos</text>
+          <line x1="120" y1="90" x2="120" y2="75" stroke="#22c55e" stroke-width="2" marker-end="url(#arrow)"/>
+        </g>
+        <g id="overlay-niño" class="overlay">
+          <rect x="108" y="98" width="24" height="18" rx="6" fill="#22c55e" opacity="0.7"/>
+          <rect x="112" y="94" width="16" height="22" rx="4" fill="#16a34a"/>
+          <text x="120" y="130" text-anchor="middle" fill="#e5e7eb" font-size="11">Una mano</text>
+        </g>
+        <g id="overlay-lactante" class="overlay">
+          <circle cx="116" cy="104" r="5" fill="#22c55e"/>
+          <circle cx="124" cy="104" r="5" fill="#22c55e"/>
+          <text x="120" y="130" text-anchor="middle" fill="#e5e7eb" font-size="11">Dos dedos</text>
+        </g>
+      </svg>
+      <div class="info">
+        <p id="handText"><strong>Adulto:</strong> Talón de una mano en el centro del tórax (mitad inferior del esternón); segunda mano encima entrelazando dedos.</p>
+        <div class="callout"><strong>Tip:</strong> Hombros sobre las manos, codos extendidos y permite el retroceso completo entre compresiones.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card col-6">
+    <h2>Práctica visual</h2>
+    <div style="display:flex; align-items:center; gap:16px">
+      <div class="chest" aria-hidden="true"></div>
+      <div style="flex:1">
+        <div class="progress"><i id="depthBar"></i></div>
+        <small id="depthNote">Profundidad objetivo adulto: 5-6 cm. Usa el control para simular.</small>
+        <div style="margin-top:8px">
+          Profundidad: <input id="depth" type="range" min="0" max="6" step="0.1" value="5.5"> <span id="depthValue">5.5 cm</span>
+        </div>
+        <div style="margin-top:10px" class="callout danger"><strong>Así no:</strong> Evita compresiones superficiales, muy rápidas o en el lugar equivocado.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card col-8">
+    <h2>Quiz rápido</h2>
+    <div id="quiz"></div>
+    <div style="margin-top:8px"><button id="submitQuiz" class="btn">Calificar</button> <button id="resetQuiz" class="btn secondary">Reiniciar</button> <span id="quizScore"></span></div>
+  </div>
+
+  <div class="card col-4">
+    <h2>Escenarios</h2>
+    <label><input type="radio" name="scene" value="hogar" checked> Hogar</label>
+    <label><input type="radio" name="scene" value="calle"> Vía pública</label>
+    <label><input type="radio" name="scene" value="piscina"> Piscina</label>
+    <ul id="scenario" class="scenario-steps"></ul>
+  </div>
+</section>
+
+<section class="card warning">
+  <h2>Riesgos y errores frecuentes</h2>
+  <ul class="clean">
+    <li><strong>Compresiones lentas/superficiales:</strong> reduce perfusión cerebral.</li>
+    <li><strong>Sin retroceso del tórax:</strong> empeora el llenado cardíaco.</li>
+    <li><strong>Ventilar en exceso:</strong> aumenta presión intratorácica y reduce retorno venoso.</li>
+    <li><strong>Retraso en usar el DEA:</strong> cada minuto sin desfibrilar reduce la supervivencia.</li>
+    <li><strong>Entorno inseguro:</strong> electricidad, tráfico, agua; prioriza tu seguridad.</li>
+    <li><strong>Manos en lugar incorrecto:</strong> riesgo de lesiones costales o viscerales.</li>
+  </ul>
+</section>
+
+<footer>
+  Recurso educativo. Para uso local. Aprende RCP con un curso certificado.
+</footer>
+</div>
+
+<div class="yt-bg" aria-hidden="true">
+  <iframe id="ytPlayer" width="560" height="315" frameborder="0" allow="autoplay" allowfullscreen></iframe>
+</div>
+<button id="audioToggle" class="audio-ctrl" title="Música de fondo">Activar sonido <span class="status">(silenciado)</span></button>
+<script>
+(function(){
+  const root = document.documentElement;
+  const bpmInput = document.getElementById('bpm');
+  const bpmValue = document.getElementById('bpmValue');
+  const depthInput = document.getElementById('depth');
+  const depthValue = document.getElementById('depthValue');
+  const depthBar = document.getElementById('depthBar');
+  const depthNote = document.getElementById('depthNote');
+  const recBpm = document.getElementById('recBpm');
+  const recDepth = document.getElementById('recDepth');
+  const notes = document.getElementById('notes');
+  const handText = document.getElementById('handText');
+
+  const profiles = {
+    'adulto': {
+      label: 'Adulto', bpmRange: '100-120/min', depthText: '5-6 cm', depthVal: 5.5, maxDepth: 6, amp: '6px',
+      hand: 'Talón de una mano en el centro del tórax (mitad inferior del esternón); segunda mano encima entrelazando dedos.',
+      notes: '30:2 si ventilas; solo compresiones si no entrenado; DEA cuanto antes.',
+      overlay: 'overlay-adulto'
+    },
+    'niño': {
+      label: 'Niño', bpmRange: '100-120/min', depthText: '± 1/3 del tórax (~4-5 cm)', depthVal: 4.5, maxDepth: 5, amp: '5px',
+      hand: 'Una mano en el centro del tórax; en niños grandes, pueden usarse dos manos.',
+      notes: '30:2 un reanimador; 15:2 dos reanimadores.',
+      overlay: 'overlay-niño'
+    },
+    'lactante': {
+      label: 'Lactante', bpmRange: '100-120/min', depthText: '± 1/3 del tórax (~4 cm)', depthVal: 4.0, maxDepth: 4, amp: '4px',
+      hand: 'Dos dedos justo debajo de la línea intermamilar sobre el esternón; con dos reanimadores: dos pulgares rodeando el tórax.',
+      notes: '30:2 un reanimador; 15:2 dos reanimadores.',
+      overlay: 'overlay-lactante'
+    }
+  };
+
+  function setBpm(val){
+    root.style.setProperty('--bpm', val);
+    bpmValue.textContent = val;
+  }
+  bpmInput.addEventListener('input', e => setBpm(e.target.value));
+  setBpm(bpmInput.value);
+
+  function setDepth(val){
+    depthValue.textContent = Number(val).toFixed(1) + ' cm';
+    const pct = Math.min(100, Math.max(0, (val / Number(depthInput.max)) * 100));
+    depthBar.style.width = pct + '%';
+  }
+  depthInput.addEventListener('input', e => setDepth(e.target.value));
+  setDepth(depthInput.value);
+
+  function selectProfile(key){
+    const p = profiles[key];
+    document.querySelectorAll('.segments .seg').forEach(btn => {
+      const active = btn.dataset.profile === key;
+      btn.classList.toggle('active', active);
+      btn.setAttribute('aria-selected', active ? 'true' : 'false');
+    });
+    recBpm.textContent = p.bpmRange;
+    recDepth.textContent = p.depthText;
+    notes.textContent = p.notes;
+    handText.innerHTML = '<strong>'+p.label+':</strong> ' + p.hand;
+    depthNote.textContent = 'Profundidad objetivo ' + p.label.toLowerCase() + ': ' + p.depthText + '. Usa el control para simular.';
+    depthInput.max = String(p.maxDepth);
+    depthInput.value = String(p.depthVal);
+    setDepth(depthInput.value);
+    root.style.setProperty('--amp', p.amp);
+    document.querySelectorAll('svg#torso .overlay').forEach(g => g.classList.remove('active'));
+    document.getElementById(p.overlay).classList.add('active');
+  }
+
+  document.querySelectorAll('.segments .seg').forEach(btn => {
+    btn.addEventListener('click', () => selectProfile(btn.dataset.profile));
+  });
+  selectProfile('adulto');
+
+  // Quiz
+  const questions = [
+    { q: 'Ritmo de compresiones recomendado (adulto/niño/lactante):', a: ['60-80/min','100-120/min','140-160/min'], correct: 1, explain: 'Las guías recomiendan 100-120 compresiones por minuto.' },
+    { q: 'Profundidad objetivo en adulto:', a: ['2-3 cm','5-6 cm','>8 cm'], correct: 1, explain: 'Aproximadamente 5-6 cm, permitiendo el retroceso completo.' },
+    { q: 'Profundidad objetivo en niño:', a: ['1/4 del tórax','1/2 del tórax','± 1/3 del tórax (~4-5 cm)'], correct: 2, explain: 'Objetivo ± 1/3 del diámetro anteroposterior.' },
+    { q: 'Profundidad objetivo en lactante:', a: ['± 1/3 del tórax (~4 cm)','5-6 cm','2-3 cm'], correct: 0, explain: 'En lactantes, ~4 cm (± 1/3 del tórax).' },
+    { q: 'Uso del DEA:', a: ['Solo con pulso','Tan pronto disponible','Nunca en niños'], correct: 1, explain: 'Usa el DEA lo antes posible y sigue sus indicaciones.' },
+  ];
+  const quizDiv = document.getElementById('quiz');
+  function renderQuiz(){
+    quizDiv.innerHTML = '';
+    questions.forEach((it, idx)=>{
+      const wrap = document.createElement('div');
+      wrap.className = 'qa';
+      wrap.innerHTML = '<strong>'+(idx+1)+'. '+it.q+'</strong><br>' + it.a.map((opt,i)=> {
+        return '<label><input type="radio" name="q'+idx+'" value="'+i+'"> '+opt+'</label>';
+      }).join('<br>') + '<div class="muted" id="explain'+idx+'"></div>';
+      quizDiv.appendChild(wrap);
+    });
+  }
+  renderQuiz();
+  document.getElementById('submitQuiz').addEventListener('click', ()=>{
+    let score = 0;
+    questions.forEach((it, idx)=>{
+      const picked = document.querySelector('input[name="q'+idx+'"]:checked');
+      const explain = document.getElementById('explain'+idx);
+      if (!picked){ explain.textContent = 'Sin respuesta.'; return; }
+      const ok = Number(picked.value) === it.correct;
+      if (ok){ score++; }
+      explain.textContent = (ok? 'Correcto. ' : 'Incorrecto. ') + it.explain;
+      explain.style.color = ok ? '#22c55e' : '#ef4444';
+    });
+    document.getElementById('quizScore').textContent = 'Puntuación: '+score+'/'+questions.length;
+  });
+  document.getElementById('resetQuiz').addEventListener('click', ()=>{
+    renderQuiz();
+    document.getElementById('quizScore').textContent = '';
+  });
+
+  // Escenarios
+  const scenes = {
+    hogar: [
+      'Verifica seguridad (gases, fuego, electricidad).',
+      'Valora respuesta y respiración.',
+      'Llama al 911 en altavoz y pide DEA.',
+      'Inicia RCP: 30:2 o solo compresiones si no entrenado.',
+      'Aplica DEA al llegar: despeja tórax, seca si está húmedo.',
+    ],
+    calle: [
+      'Asegura zona (tráfico); utiliza guantes si disponibles.',
+      'Pide ayuda a transeúntes; señala a alguien para el DEA.',
+      'Inicia compresiones firmes en el centro del tórax.',
+      'Releva reanimador cada 2 min si es posible.',
+      'Coloca parches del DEA y sigue instrucciones.',
+    ],
+    piscina: [
+      'Saca a la víctima del agua en superficie segura.',
+      'Seca el tórax cuidadosamente antes de usar el DEA.',
+      'Si respiración ausente: 5 ventilaciones iniciales (especialmente en niños).',
+      'Continúa con 30:2; prioriza oxigenación en ahogamiento.',
+      'Usa DEA en cuanto sea seguro y esté seco.',
+    ],
+  };
+  const scenarioUl = document.getElementById('scenario');
+  function renderScene(key){
+    scenarioUl.innerHTML = '';
+    (scenes[key]||[]).forEach(step=>{
+      const li = document.createElement('li');
+      li.innerHTML = '<input type="checkbox"> '+step;
+      scenarioUl.appendChild(li);
+    });
+  }
+  document.querySelectorAll('input[name="scene"]').forEach(r=>{
+    r.addEventListener('change', e => renderScene(e.target.value));
+  });
+  renderScene('hogar');
+})();
+</script>
+<script>(function(){
+  const yt = document.getElementById('ytPlayer');
+  const toggle = document.getElementById('audioToggle');
+  if (!yt || !toggle) return;
+  function buildSrc(m){
+    return 'https://www.youtube.com/embed/fNFzfwLM72c?autoplay=1&loop=1&playlist=fNFzfwLM72c&controls=0&modestbranding=1&rel=0' + (m ? '&mute=1' : '&mute=0');
+  }
+  let muted = true;
+  function renderLabel(){
+    toggle.innerHTML = (muted ? 'Activar sonido ' : 'Silenciar ') + '<span class="status">' + (muted ? '(silenciado)' : '(sonando)') + '</span>';
+  }
+  function setMuted(m){
+    muted = m; renderLabel();
+    const t = Date.now();
+    yt.src = buildSrc(muted) + '&t=' + t; // force reload to apply mute
+  }
+  toggle.addEventListener('click', ()=> setMuted(!muted));
+  setMuted(true);
+})();</script>
+</body>
+</html>
+
+
