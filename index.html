@@ -434,6 +434,7 @@ svg .overlay.active { display:block }
     idChooser.querySelectorAll('[data-id-flow]').forEach((btn) => btn.classList.remove('hidden'));
     if (idSymptomsTitle) idSymptomsTitle.textContent = '';
     if (idSymptomsList) idSymptomsList.innerHTML = '';
+    updateFlowButtons();
   }
 
   function closeIdentificationVideo(){
@@ -490,6 +491,7 @@ svg .overlay.active { display:block }
       li.textContent = txt;
       idSymptomsList.appendChild(li);
     });
+    updateFlowButtons();
   }
 
   function updateProgress(){
@@ -497,7 +499,10 @@ svg .overlay.active { display:block }
   }
 
   function updateFlowButtons(){
-    if (flowPrev) flowPrev.disabled = currentStep <= 0;
+    if (flowPrev){
+      const disablePrev = currentStep === 0 && !selectedSex;
+      flowPrev.disabled = disablePrev;
+    }
     if (flowNext){
       const disableNext = currentStep >= steps.length - 1;
       flowNext.disabled = disableNext;
